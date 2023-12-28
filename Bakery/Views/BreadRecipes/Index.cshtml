@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Bakery.Models.BreadRecipe>
+
+@{
+    ViewData["Title"] = "Рецептура";
+}
+
+<h1>Рецептура</h1>
+<form asp-action="Index" method="get">
+    <label>Фильтр по кол-ву продукта на изделие: </label>
+    <input type="number" name="quantityFilter" />
+    <label>Фильтр по цене: </label>
+    <input type="number" name="priceFilter" step="0.01" />
+    <input type="submit" value="Применить фильтр" />
+</form>
+
+<p>
+    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+    {
+        <a asp-action="Create">Создать новый</a>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Наименование изделия
+            </th>
+            <th>
+                Названия продуктов
+            </th>
+            <th>
+                Кол-во продукта на изделие
+            </th>
+            <th>
+                Цена
+            </th>
+            <th>
+                Ингредиент
+            </th>
+            <th>
+                Выпекаемая продукция
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IngredientName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityPerUnit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+                @{
+                    var ingredientName = item.Ingredient != null ? item.Ingredient.Name : null;
+                    var bakeryProductName = item.BakeryProduct != null ? item.BakeryProduct.Name : null;
+                }
+            <td>
+                @Html.DisplayFor(modelItem => ingredientName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => bakeryProductName)
+            </td>
+            <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.BreadRecipeId">Изменить |</a>
+                        <a asp-action="Delete" asp-route-id="@item.BreadRecipeId">Удалить |</a>
+
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") || User.IsInRole("User"))
+                     {
+                        <a asp-action="Details" asp-route-id="@item.BreadRecipeId">Детали</a>
+                     }
+                   
+                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

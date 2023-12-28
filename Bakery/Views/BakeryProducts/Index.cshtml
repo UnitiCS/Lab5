@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Bakery.Models.BakeryProduct>
+
+@{
+    ViewData["Title"] = "Выпекаемая продукция";
+}
+
+<h1>Выпекаемая продукция</h1>
+
+<form method="get" action="@Url.Action("Index")">
+    <label for="typeFilter">Тип продукта:</label>
+    <input type="text" name="typeFilter" value="@ViewBag.TypeFilter" />
+
+    <button type="submit">Применить фильтр</button>
+</form>
+
+<p>
+    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+    {
+        <a asp-action="Create">Создать новый</a>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Название
+            </th>
+            <th>
+                Вид
+            </th>
+            <th>
+                Краткое описание
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.BakeryProductId">Изменить |</a>
+
+                        <a asp-action="Delete" asp-route-id="@item.BakeryProductId">Удалить |</a>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") || User.IsInRole("User"))
+                    {
+                        <a asp-action="Details" asp-route-id="@item.BakeryProductId">Детали</a>
+                    }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

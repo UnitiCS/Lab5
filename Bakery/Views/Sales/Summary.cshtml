@@ -1,0 +1,42 @@
+﻿@model Bakery.ViewModels.SummaryViewModel
+@{
+    ViewData["Title"] = "Отдел сбыта";
+}
+<h1>Отдел сбыта</h1>
+
+<p>
+    <a asp-controller="Home" asp-action="Index">Назад</a>
+</p>
+
+<form asp-controller="Sales" asp-action="Summary" method="get">
+    <label for="startDate">Начальная дата:</label>
+    <input type="date" name="startDate" value="@((string)ViewData["StartDate"])">
+
+    <label for="endDate">Конечная дата:</label>
+    <input type="date" name="endDate" value="@((string)ViewData["EndDate"])">
+
+    <input type="submit" value="Применить фильтр">
+</form>
+
+<form asp-controller="Sales" asp-action="Summary" method="get">
+    <label for="year">Выберите год:</label>
+    <select name="year" id="year">
+        <option value="">Все года</option>
+        <option value="-1" selected="@(ViewData["Year"] != null && (int)ViewData["Year"] == -1)">-</option>
+        @for (int i = DateTime.Now.Year; i >= 2000; i--)
+        {
+            var isSelected = i == ((int?)ViewData["Year"] ?? DateTime.Now.Year);
+            <option value="@i" selected="@isSelected">@i</option>
+        }
+    </select>
+
+    <input type="submit" value="Применить фильтр">
+</form>
+<p>
+    <strong>Суммарная выручка: @Model.TotalRevenue.ToString("C")</strong>
+</p>
+
+<p>
+    <strong>Суммарная потраченная сумма на продукты: @Model.TotalSpending.ToString("C")</strong>
+</p>
+

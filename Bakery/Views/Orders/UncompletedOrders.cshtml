@@ -1,0 +1,44 @@
+﻿@model List<Bakery.Models.Order>
+
+<h2>Невыполненные заказы</h2>
+
+<form asp-action="UncompletedOrders" method="get">
+    <label for="startDate">Выберите начальную дату заказа:</label>
+    <input type="date" name="startDate" required>
+
+    <label for="endDate">Выберите конечную дату заказа:</label>
+    <input type="date" name="endDate" required>
+
+    <button type="submit">Показать заказы</button>
+</form>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Номер заказа</th>
+                <th>Имя заказчика</th>
+                <th>Имя сотрудника</th>
+                <th>Дата заказа</th>
+                <th>Дата доставки</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.CustomerName</td>
+                    <td>@order.Employee.FirstName @order.Employee.LastName</td>
+                    <td>@(order.OrderDate.HasValue ? order.OrderDate.Value.ToShortDateString() : string.Empty)</td>
+                    <td>@(order.DeliveryDate.HasValue ? order.DeliveryDate.Value.ToShortDateString() : string.Empty)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Нет данных о не выполненных заказах.</p>
+}

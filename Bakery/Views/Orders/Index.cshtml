@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Bakery.Models.Order>
+
+@{
+    ViewData["Title"] = "Заказы";
+}
+
+<h1>Заказы</h1>
+<form asp-action="Index" method="get">
+    <p>
+        <label for="startDate">Дата заказа с:</label>
+        <input type="date" name="startDate" value="@ViewData["StartDate"]" />
+
+        <label for="endDate">по:</label>
+        <input type="date" name="endDate" value="@ViewData["EndDate"]" />
+
+        <input type="submit" value="Фильтровать" />
+    </p>
+</form>
+@if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+{
+    <a asp-action="DamagedOrders" asp-controller="Orders">Заказы с повреждениями</a>
+    <a asp-action="UncompletedOrders" asp-controller="Orders">Заказы без завершения</a>
+}
+<p>
+    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+    {
+        <a asp-action="Create">Создать новый</a>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Наименование заказчика
+            </th>
+            <th>
+                Название продукции
+            </th>
+            <th>
+                Вид продукции
+            </th>
+            <th>
+                Количество
+            </th>
+            <th>
+                Цена
+            </th>
+            <th>
+                Дата заказа
+            </th>
+            <th>
+                Дата реализации заказа
+            </th>
+            <th>
+                Выполнен
+            </th>
+            <th>
+                Поврежден
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                @{
+                    string shortOrderDate = item.OrderDate.HasValue ? item.OrderDate.Value.ToShortDateString() : string.Empty;
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => shortOrderDate)
+                </td>
+                @{
+                    string shortDeliveryDate = item.DeliveryDate.HasValue ? item.DeliveryDate.Value.ToShortDateString() : string.Empty;
+                }
+                <td style="text-align:center;">
+                    @Html.DisplayFor(modelItem => shortDeliveryDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsCompleted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsDamaged)
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.OrderId">Изменить |</a>
+                        <a asp-action="Delete" asp-route-id="@item.OrderId">Удалить |</a>
+                    }
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") || User.IsInRole("User"))
+                    {
+                        <a asp-action="Details" asp-route-id="@item.OrderId">Детали</a>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

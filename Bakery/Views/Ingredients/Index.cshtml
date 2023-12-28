@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Bakery.Models.Ingredient>
+
+@{
+    ViewData["Title"] = "Продукты";
+}
+
+<h1>Продукты</h1>
+<form asp-action="Index" method="get">
+    <p>
+        <label for="searchString">Фильтр по наименованию:</label>
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+        <input type="submit" value="Фильтровать" />
+    </p>
+</form>
+@if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+{
+    <a asp-action="LowStockIngredients" asp-controller="Ingredients" asp-route-targetDate="2023-01-01">Недостающие продукты</a>
+}
+
+
+<p>
+    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+    {
+        <a asp-action="Create">Создать новый</a>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Название
+            </th>
+            <th>
+                Тип
+            </th>
+            <th>
+                Количество на складе
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.IngredientId">Изменить |</a>
+
+                        <a asp-action="Delete" asp-route-id="@item.IngredientId">Удалить |</a>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") || User.IsInRole("User"))
+                    {
+                        <a asp-action="Details" asp-route-id="@item.IngredientId">Детали</a>
+                    }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

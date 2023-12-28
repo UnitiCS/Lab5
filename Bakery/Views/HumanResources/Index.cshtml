@@ -1,0 +1,29 @@
+﻿@model List<Bakery.Models.Employee>
+
+@{
+    ViewData["Title"] = "Отдел кадров";
+}
+
+<h1>Отдел кадров</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Должность</th>
+            <!-- Добавьте другие заголовки по необходимости -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.FirstName</td>
+                <td>@employee.LastName</td>
+                <td>@employee.Position</td>
+                <!-- Добавьте другие ячейки по необходимости -->
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,35 @@
+﻿@model List<Bakery.ViewModels.Users.UserViewModel>
+
+<h1>Управление пользователями</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Имя пользователя</th>
+            <th>Email</th>
+            <th>Роль</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.RoleName</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@user.Id">Изменить</a>
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить данного пользователя?');">
+                        <button type="submit" class="btn btn-danger btn-sm mt-2">Удалить</button>
+                    </form>
+
+                
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Bakery.Models.Supply>
+
+@{
+    ViewData["Title"] = "Поставки";
+}
+
+<h1>Поставки</h1>
+<form asp-action="Index" method="get">
+    <p>
+        <label for="supplier">Поиск по поставщику:</label>
+        <input type="text" name="supplier" value="@ViewData["Supplier"]" />
+
+        <input type="submit" value="Фильтровать" />
+    </p>
+</form>
+
+<p>
+    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+    {
+        <a asp-action="Create">Создать новый</a>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Поставщик
+            </th>
+            <th>
+                Название продукта
+            </th>
+            <th>
+                Количество
+            </th>
+            <th>
+               Цена
+            </th>
+            <th>
+                Дата поставки
+            </th>
+            <th>
+                Ингредиент
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+                @{
+                    string shortSupplyDate = item.SupplyDate.HasValue ? item.SupplyDate.Value.ToShortDateString() : string.Empty;
+                }
+            <td>
+                @Html.DisplayFor(modelItem => shortSupplyDate)
+            </td>
+                @{
+                    var ingredientName = item.Ingredient != null ? item.Ingredient.Name : null;
+                }
+            <td>
+                @Html.DisplayFor(modelItem => ingredientName)
+            </td>
+            <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.SupplyId">Изменить |</a>
+
+                        <a asp-action="Delete" asp-route-id="@item.SupplyId">Удалить |</a>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin") || User.IsInRole("User"))
+                    {
+                        <a asp-action="Details" asp-route-id="@item.SupplyId">Детали</a>
+                    }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
